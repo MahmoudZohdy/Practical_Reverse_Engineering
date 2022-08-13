@@ -70,7 +70,7 @@ VOID ListProcessThreads(DWORD dwOwnerPID)
 
     hThreadSnap = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
     if (hThreadSnap == INVALID_HANDLE_VALUE)
-        return(FALSE);
+        return;
 
     te32.dwSize = sizeof(THREADENTRY32);
 
@@ -78,7 +78,7 @@ VOID ListProcessThreads(DWORD dwOwnerPID)
     {
         printError((WCHAR*)L"Thread32First");
         CloseHandle(hThreadSnap);
-        return(FALSE);
+        return;
     }
 
     do
@@ -97,7 +97,7 @@ VOID ListProcessThreads(DWORD dwOwnerPID)
     _tprintf(TEXT("\n"));
 
     CloseHandle(hThreadSnap);
-    return(TRUE);
+    return;
 }
 
 void printError(WCHAR* msg)
