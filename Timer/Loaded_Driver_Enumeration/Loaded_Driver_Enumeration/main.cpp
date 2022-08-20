@@ -68,7 +68,7 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject, _In_ PUNICODE_STRING Regi
     KeInitializeTimerEx(&timer, NotificationTimer);
     LARGE_INTEGER duetime = { 0 };
     duetime.QuadPart = -10000000;
-    LONG period = 10000;
+    LONG period = 1000 * 600;
     KeSetTimerEx(&timer, duetime, period, &Dpc);
 
 
