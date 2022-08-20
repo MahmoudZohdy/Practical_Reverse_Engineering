@@ -1,0 +1,86 @@
+;
+; Loaded_Driver_Enumeration.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=Sample ; TODO: edit Class
+ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171} ; TODO: edit ClassGuid
+Provider=%ManufacturerName%
+CatalogFile=Loaded_Driver_Enumeration.cat
+DriverVer= ; TODO: set DriverVer in stampinf property pages
+
+[DestinationDirs]
+DefaultDestDir = 12
+Loaded_Driver_Enumeration_Device_CoInstaller_CopyFiles = 11
+
+; ================= Class section =====================
+
+[ClassInstall32]
+Addreg=SampleClassReg
+
+[SampleClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+Loaded_Driver_Enumeration.sys  = 1,,
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NT$ARCH$
+
+[Standard.NT$ARCH$]
+%Loaded_Driver_Enumeration.DeviceDesc%=Loaded_Driver_Enumeration_Device, Root\Loaded_Driver_Enumeration ; TODO: edit hw-id
+
+[Loaded_Driver_Enumeration_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+Loaded_Driver_Enumeration.sys
+
+;-------------- Service installation
+[Loaded_Driver_Enumeration_Device.NT.Services]
+AddService = Loaded_Driver_Enumeration,%SPSVCINST_ASSOCSERVICE%, Loaded_Driver_Enumeration_Service_Inst
+
+; -------------- Loaded_Driver_Enumeration driver install sections
+[Loaded_Driver_Enumeration_Service_Inst]
+DisplayName    = %Loaded_Driver_Enumeration.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\Loaded_Driver_Enumeration.sys
+
+;
+;--- Loaded_Driver_Enumeration_Device Coinstaller installation ------
+;
+
+[Loaded_Driver_Enumeration_Device.NT.CoInstallers]
+AddReg=Loaded_Driver_Enumeration_Device_CoInstaller_AddReg
+CopyFiles=Loaded_Driver_Enumeration_Device_CoInstaller_CopyFiles
+
+[Loaded_Driver_Enumeration_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[Loaded_Driver_Enumeration_Device_CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[Loaded_Driver_Enumeration_Device.NT.Wdf]
+KmdfService =  Loaded_Driver_Enumeration, Loaded_Driver_Enumeration_wdfsect
+[Loaded_Driver_Enumeration_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="<Your manufacturer name>" ;TODO: Replace with your manufacturer name
+ClassName="Samples" ; TODO: edit ClassName
+DiskName = "Loaded_Driver_Enumeration Installation Disk"
+Loaded_Driver_Enumeration.DeviceDesc = "Loaded_Driver_Enumeration Device"
+Loaded_Driver_Enumeration.SVCDESC = "Loaded_Driver_Enumeration Service"
