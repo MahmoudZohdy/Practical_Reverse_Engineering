@@ -90,7 +90,7 @@ EnumerateLoadedDriverDPC(
 
     RTL_PROCESS_MODULES* InformationData = (RTL_PROCESS_MODULES*)ExAllocatePool(NonPagedPool, BufferSize);
     if (!InformationData) {
-        DbgPrint("Driver Failed Allocate memory\n ");
+        DbgPrint("Driver Failed to Allocate memory\n ");
         return;
     }
     RtlZeroMemory(InformationData, BufferSize);
@@ -98,9 +98,13 @@ EnumerateLoadedDriverDPC(
     Status = ZwQuerySystemInformation(SystemModuleInformation, InformationData, BufferSize, &BufferSize);
 
     if (!NT_SUCCESS(Status)) {
-        DbgPrint("Driver Failed  ZwQuerySystemInformation  %x\n", Status);
+
+        DbgPrint("ZwQuerySystemInformation Failed Error Code %x\n", Status);
         return;
     }
+
+    DbgPrint("Start Enumerating Loaded Drivers  \n");
+
     for (ULONG i = 0; i < InformationData->NumberOfModules; i++) {
         DbgPrint("Driver %s at Base Address %p \n", InformationData->Modules[i].FullPathName, InformationData->Modules[i].ImageBase);
     }
